@@ -32,10 +32,12 @@ class Nernst():
         xlabs = np.arange(0, 4, 1.0)
         x_tick_names = ['','Channel Closed', 'Channel Open','']
         plt.xticks(xlabs,x_tick_names,color='lightgray')
+        plt.yticks(color='lightgray')
         plt.text(2, volts+3, str(round(volts, 2)))
         plt.title(f'Membrane Potential for {name}',color='lightgray')
         plt.xlabel("Membrane Permeability",color='lightgray')
         plt.ylabel("Voltage (mV)",color='lightgray')
+        plt.grid(color="white", linestyle='-', linewidth=0.1)
         plt.legend()
         
     def plot_positions(self,ion_object_list):
@@ -171,4 +173,8 @@ if __name__ == '__main__':
     plt.style.use("dark_background")
     plt.tight_layout()
     
+##################################################### Webpage code
+    st.write('Example Image')
+    st.image('Example.png')
+    st.write("Here's the interactive part")
     st.pyplot(figure)
