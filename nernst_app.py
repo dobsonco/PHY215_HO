@@ -31,12 +31,11 @@ class Nernst():
         plt.xlim(0,3)
         xlabs = np.arange(0, 4, 1.0)
         x_tick_names = ['','Channel Closed', 'Channel Open','']
-        plt.xticks(xlabs,x_tick_names,color='lightgray')
-        plt.yticks(color='lightgray')
+        plt.xticks(xlabs,x_tick_names)
         plt.text(2, volts+3, str(round(volts, 2)))
-        plt.title(f'Membrane Potential for {name}',color='lightgray')
-        plt.xlabel("Membrane Permeability",color='lightgray')
-        plt.ylabel("Voltage (mV)",color='lightgray')
+        plt.title(f'Membrane Potential for {name}')
+        plt.xlabel("Membrane Permeability")
+        plt.ylabel("Voltage (mV)")
         plt.grid(color="white", linestyle='-', linewidth=0.1)
         plt.legend()
         
@@ -69,11 +68,11 @@ class Nernst():
         
         xlabs = np.arange(-1.0,1.0,0.5)
         x_tick_names = ['','In','','Out']
-        plt.xticks(xlabs,x_tick_names,color='lightgray')
+        plt.xticks(xlabs,x_tick_names)
         
         plt.xlim(-1,1)
         plt.ylim(0,1.01)
-        plt.title('Distrubution of Ions',color='lightgray')
+        plt.title('Distrubution of Ions')
         plt.legend()
         plt.tick_params(left=False,bottom=True,labelleft=False,labelbottom=True)
         return unique_colors
@@ -170,7 +169,6 @@ if __name__ == '__main__':
         potential = Nernst.find_potential(temp,z,inside,outside)
         Nernst.plot_potential(potential*1000,key,unique_colors[i])
 
-    plt.style.use("dark_background")
     plt.tight_layout()
     
 ##################################################### Webpage code
