@@ -1,0 +1,13 @@
+1. Install anaconda if you do not already have it installed.
+Anaconda: https://docs.anaconda.com/anaconda/install/index.html
+
+2. Navigate to the place you downloaded this folder.You will need to use the terminal for this. 
+Open Anaconda and then open the Qt Console, it acts similarly to a normal terminal. 
+If you do not know how to do this, watch one of these videos:
+windows: https://www.youtube.com/watch?v=8-mYKkNzjU4
+mac/linux: https://www.youtube.com/watch?v=KqtKD8z-NRc
+
+3. Enter the following command into the Qt Console: !python3 SETUP.py
+Let that finish before you do anything else
+
+4. Enter the following command into the Qt Console: !python3 run.py
