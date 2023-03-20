@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import random as rd
 from collections import Counter
 import streamlit as st
+import pandas as pd
 
 class ion(object):
     
@@ -149,47 +150,54 @@ Nernst = Nernst()
 #################################################### Main Below
 if __name__ == '__main__':
     temp = 300
-    
+
     molarity_dict = {
 #                  z  in  out
-        'sodium': (1, 0.1, 2),
-        'calcium': (2, 4, 0.1),
-        'potassium': (1, 1, 4),
+        'sodium': (1, 0.1, 2.1),
+        'calcium': (2, 7.1, 0.1),
+        'potassium': (1, 1.1, 4.1),
     }
     
-    ion_object_list,unique_colors,colors,names = Nernst.setup(molarity_dict)
-    
-##################################################### Plot Ions
-    figure, ax = plt.subplots(2,1,figsize=(12,12))
-
-    plt.subplot(211)
-    ax[0].set_facecolor('black')
-    plt.style.use('dark_background')
-    
-    for i,key in enumerate(molarity_dict):
-        z = molarity_dict[key][0]
-        inside = molarity_dict[key][1]
-        outside = molarity_dict[key][2]
-        potential = Nernst.find_potential(temp,z,inside,outside)
-        Nernst.plot_potential(potential*1000,key,unique_colors[i])
-    plt.title(f'Membrane Potential for different species',color='lightgray')
-
-    plt.subplot(212)
-    plt.style.use('dark_background')
-    ax[1].set_facecolor('black')
-    Nernst.plot_positions(ion_object_list,colors,names)
-
-    plt.tight_layout()
-    plt.style.use('dark_background')
-
-    for plot in ax:
-        for spine in plot.spines.values():
-            spine.set_edgecolor('lightgray')
-        
-    
 ##################################################### Webpage code
-    st.title('Nernst  Potential App')
-    st.write('Example Image')
+    st.title('Nernst Potential App')
+    st.write('''The Nernst potential is the potential across a cell membrane
+     that opposes the net diffusion of a particular ion through the membrane. This term has its major 
+     applications in biochemistry and also in statistical physics as it relates to entropy and microstates.
+     In addition, this term is also useful in electrochemistry regarding electrochemical
+     cells.''')
+    st.write('In order to determine the Nernst potential, we can use the following equation:')
+    st.latex(r'''V = \frac{RT}{zF}ln\frac{X_{out}}{X_{in}}''')
+    st.markdown('''_If everything is working correctly, the plot you make should look like the image below, if it doesn't, there is an issue with the program and it's probably not your fault_''')
     st.image('Example.png')
-    st.write("Here's the interactive part")
-    st.pyplot(figure)
+    st.write('The following table is editable, change the values as you see fit')
+    st.markdown('''The first row is the name of the species, the second is the number of valence electrons, 
+    the third is the concentration inside, and the last one is the concentration outside''')
+    molarity_dict = st.experimental_data_editor(molarity_dict)
+    if st.button('Plot',help='Plots the Data in the DataFrame'):
+        ion_object_list,unique_colors,colors,names = Nernst.setup(molarity_dict,total_particles=300)
+        figure, ax = plt.subplots(2,1,figsize=(12,12))
+
+        plt.subplot(211)
+        ax[0].set_facecolor('black')
+        plt.style.use('dark_background')
+        
+        for i,key in enumerate(molarity_dict):
+            z = molarity_dict[key][0]
+            inside = molarity_dict[key][1]
+            outside = molarity_dict[key][2]
+            potential = Nernst.find_potential(temp,z,inside,outside)
+            Nernst.plot_potential(potential*1000,key,unique_colors[i])
+        plt.title(f'Membrane Potential for different species',color='lightgray')
+
+        plt.subplot(212)
+        plt.style.use('dark_background')
+        ax[1].set_facecolor('black')
+        Nernst.plot_positions(ion_object_list,colors,names)
+
+        plt.tight_layout()
+        plt.style.use('dark_background')
+
+        for plot in ax:
+            for spine in plot.spines.values():
+                spine.set_edgecolor('lightgray')
+        st.pyplot(figure,clear_figure=False)
