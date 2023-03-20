@@ -63,7 +63,6 @@ class Nernst():
         plt.xticks(xlabs,x_tick_names,color='lightgray')
         plt.yticks(color='lightgray')
         plt.text(2, volts+3, str(round(volts, 2)))
-        plt.title(f'Membrane Potential for {name}',color='lightgray')
         plt.xlabel("Membrane Permeability",color='lightgray')
         plt.ylabel("Voltage (mV)",color='lightgray')
         plt.grid(color="white", linestyle='-', linewidth=0.1)
@@ -92,6 +91,14 @@ class Nernst():
         plt.title('Distrubution of Ions',color='lightgray')
         plt.tick_params(left=False,bottom=True,labelleft=False,labelbottom=True)
         plt.legend(facecolor='black',edgecolor='lightgray')
+
+    def entropy(self,mol_dict):
+        '''
+        This function takes 1 input, that is the molarity dictionary. Using this
+        it finds the entropy change before and after the ion channels push ions across
+        the membrane.
+        '''
+        pass
         
     def setup(self,mol_dict,total_particles=100):
         '''
@@ -165,6 +172,7 @@ if __name__ == '__main__':
         outside = molarity_dict[key][2]
         potential = Nernst.find_potential(temp,z,inside,outside)
         Nernst.plot_potential(potential*1000,key,unique_colors[i])
+    plt.title(f'Membrane Potential for different species',color='lightgray')
 
     plt.subplot(212)
     plt.style.use('dark_background')
@@ -180,6 +188,7 @@ if __name__ == '__main__':
         
     
 ##################################################### Webpage code
+    st.title('Nernst  Potential App')
     st.write('Example Image')
     st.image('Example.png')
     st.write("Here's the interactive part")
