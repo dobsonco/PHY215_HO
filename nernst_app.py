@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import random as rd
 from collections import Counter
 import streamlit as st
-import pandas as pd
 
 class ion(object):
     
@@ -66,7 +65,7 @@ class Nernst():
         plt.text(2, volts+3, str(round(volts, 2)))
         plt.xlabel("Membrane Permeability",color='lightgray')
         plt.ylabel("Voltage (mV)",color='lightgray')
-        plt.grid(color="white", linestyle='-', linewidth=0.1)
+        plt.grid(color="white", linestyle='-', linewidth=0.2)
         plt.legend(facecolor='black',edgecolor='lightgray')
         
     def plot_positions(self,ion_object_list,colors,names):
@@ -93,12 +92,22 @@ class Nernst():
         plt.tick_params(left=False,bottom=True,labelleft=False,labelbottom=True)
         plt.legend(facecolor='black',edgecolor='lightgray')
 
-    def entropy(self,mol_dict):
+    def entropy(self,mol_dict,volume=1):
         '''
         This function takes 1 input, that is the molarity dictionary. Using this
         it finds the entropy change before and after the ion channels push ions across
         the membrane.
         '''
+        plt.xlim(0,3)
+        xlabs = np.arange(0, 4, 1.0)
+        x_tick_names = ['','Channel Closed', 'Channel Open','']
+        plt.xticks(xlabs,x_tick_names,color='lightgray')
+        plt.yticks(color='lightgray')
+        plt.title('Net Entropy')
+        #plt.text(2, volts+3, str(round(volts, 2)))
+        plt.xlabel("Membrane Permeability",color='lightgray')
+        plt.ylabel("Joules",color='lightgray')
+        plt.grid(color="white", linestyle='-', linewidth=0.2)
         pass
         
     def setup(self,mol_dict,total_particles=100):
@@ -160,13 +169,18 @@ if __name__ == '__main__':
     
 ##################################################### Webpage code
     st.title('Nernst Potential App')
+    #st.write('''The purpose of this app is to help visualize the relatonship between, 
+    #the Nernst potential and Entropy.''')
     st.write('''The Nernst potential is the potential across a cell membrane
      that opposes the net diffusion of a particular ion through the membrane. This term has its major 
      applications in biochemistry and also in statistical physics as it relates to entropy and microstates.
-     In addition, this term is also useful in electrochemistry regarding electrochemical
-     cells.''')
+     ''')
     st.write('In order to determine the Nernst potential, we can use the following equation:')
     st.latex(r'''V = \frac{RT}{zF}ln\frac{X_{out}}{X_{in}}''')
+    st.write("Where R is the gas constant, T is the temperature, and the X's are the concentrations")
+    st.write('To find the entropy, we use the following equation:')
+    st.latex(r'''S = k_bln(\omega)''')
+    st.write('Where S is the entropy in Joules, kb is the Boltzmann constant, and ω is the number of microstates')
     st.markdown('''_If everything is working correctly, the plot you make should look like the image below, if it doesn't, there is an issue with the program and it's probably not your fault_''')
     st.image('Example.png')
     st.write('The following table is editable, change the values as you see fit')
@@ -175,12 +189,11 @@ if __name__ == '__main__':
     molarity_dict = st.experimental_data_editor(molarity_dict)
     if st.button('Plot',help='Plots the Data in the DataFrame'):
         ion_object_list,unique_colors,colors,names = Nernst.setup(molarity_dict,total_particles=300)
-        figure, ax = plt.subplots(2,1,figsize=(12,12))
+        figure, ax = plt.subplots(3,1,figsize=(12,16))
 
-        plt.subplot(211)
-        ax[0].set_facecolor('black')
+        plt.subplot(311)
         plt.style.use('dark_background')
-        
+        ax[0].set_facecolor('black')
         for i,key in enumerate(molarity_dict):
             z = molarity_dict[key][0]
             inside = molarity_dict[key][1]
@@ -189,9 +202,14 @@ if __name__ == '__main__':
             Nernst.plot_potential(potential*1000,key,unique_colors[i])
         plt.title(f'Membrane Potential for different species',color='lightgray')
 
-        plt.subplot(212)
+        plt.subplot(312)
         plt.style.use('dark_background')
         ax[1].set_facecolor('black')
+        Nernst.entropy(molarity_dict)
+        
+        plt.subplot(313)
+        plt.style.use('dark_background')
+        ax[2].set_facecolor('black')
         Nernst.plot_positions(ion_object_list,colors,names)
 
         plt.tight_layout()
