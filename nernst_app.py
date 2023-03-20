@@ -31,13 +31,14 @@ class Nernst():
         plt.xlim(0,3)
         xlabs = np.arange(0, 4, 1.0)
         x_tick_names = ['','Channel Closed', 'Channel Open','']
-        plt.xticks(xlabs,x_tick_names)
+        plt.xticks(xlabs,x_tick_names,color='lightgray')
+        plt.yticks(color='lightgray')
         plt.text(2, volts+3, str(round(volts, 2)))
-        plt.title(f'Membrane Potential for {name}')
-        plt.xlabel("Membrane Permeability")
-        plt.ylabel("Voltage (mV)")
+        plt.title(f'Membrane Potential for {name}',color='lightgray')
+        plt.xlabel("Membrane Permeability",color='lightgray')
+        plt.ylabel("Voltage (mV)",color='lightgray')
         plt.grid(color="white", linestyle='-', linewidth=0.1)
-        plt.legend()
+        plt.legend(facecolor='black',edgecolor='lightgray')
         
     def plot_positions(self,ion_object_list):
         '''
@@ -68,13 +69,13 @@ class Nernst():
         
         xlabs = np.arange(-1.0,1.0,0.5)
         x_tick_names = ['','In','','Out']
-        plt.xticks(xlabs,x_tick_names)
+        plt.xticks(xlabs,x_tick_names,color='lightgray')
         
         plt.xlim(-1,1)
         plt.ylim(0,1.01)
-        plt.title('Distrubution of Ions')
-        plt.legend()
+        plt.title('Distrubution of Ions',color='lightgray')
         plt.tick_params(left=False,bottom=True,labelleft=False,labelbottom=True)
+        plt.legend(facecolor='black',edgecolor='lightgray')
         return unique_colors
         
     def setup(self,mol_dict,total_particles=100):
@@ -140,6 +141,7 @@ class ion(object):
         return(self.position)
 
 if __name__ == '__main__':
+    temp = 300
     
     molarity_dict = {
 #                  z  in  out
@@ -151,16 +153,16 @@ if __name__ == '__main__':
     ion_object_list = Nernst.setup(molarity_dict)
     
 ##################################################### Plot Ions
-    figure = plt.figure(figsize=(10,10))
-    plt.subplot(2,1,2)
-    unique_colors = Nernst.plot_positions(ion_object_list)
+    figure, ax = plt.subplots(2,1,figsize=(12,12))
     
-##################################################### Plot Potential
+    plt.subplot(212)
+    plt.style.use('dark_background')
+    ax[1].set_facecolor('black')
+    unique_colors = Nernst.plot_positions(ion_object_list)
 
-#Add code here that takes in a dictionary of colors for the different species
-#so that the colors in plot one and two match
-    plt.subplot(2,1,1)
-    temp = 300
+    plt.subplot(211)
+    ax[0].set_facecolor('black')
+    plt.style.use('dark_background')
     
     for i,key in enumerate(molarity_dict):
         z = molarity_dict[key][0]
@@ -170,6 +172,12 @@ if __name__ == '__main__':
         Nernst.plot_potential(potential*1000,key,unique_colors[i])
 
     plt.tight_layout()
+    plt.style.use('dark_background')
+
+    for plot in ax:
+        for spine in plot.spines.values():
+            spine.set_edgecolor('lightgray')
+        
     
 ##################################################### Webpage code
     st.write('Example Image')
