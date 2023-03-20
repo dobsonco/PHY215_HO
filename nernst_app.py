@@ -4,6 +4,35 @@ import random as rd
 from collections import Counter
 import streamlit as st
 
+class ion(object):
+    
+    def __init__(self,ion_name,valence,IO):
+        """ Initialize ion object.
+        Inputs are
+        ion_name: the type of ion (string)
+        valence: number of valence electrons (int)
+        location: string, either in or out
+        """
+        self.ion_name = ion_name
+        self.valence = valence
+        self.IO = IO
+        if IO == 'in':
+            self.position = (rd.uniform(-0.99,-0.02),rd.uniform(0.01,0.99))
+        else:
+            self.position = (rd.uniform(0.02,0.99),rd.uniform(0.01,0.99))
+        
+    def get_name(self):
+        return(self.ion_name)
+    
+    def get_valence(self):
+        return(self.valence)
+    
+    def get_IO(self):
+        return(self.IO)
+    
+    def get_position(self):
+        return(self.position)
+
 class Nernst():
 
     def find_potential(self,T,z,Xi,Xo):
@@ -40,25 +69,13 @@ class Nernst():
         plt.grid(color="white", linestyle='-', linewidth=0.1)
         plt.legend(facecolor='black',edgecolor='lightgray')
         
-    def plot_positions(self,ion_object_list):
+    def plot_positions(self,ion_object_list,colors,names):
         '''
         This function takes in a list of ion objects, and plots them on a
         scatterplot. All ions of the same name are given the same color, but
         said color is random. Also returns a variable (called unique_colors)
         with a list of colors corresponding to the different ionic species in solution.
         '''
-        names = []
-        colors = []
-        [names.append(x.get_name()) for x in ion_object_list]
-        counted = dict(Counter(names))
-        for key in counted:
-            color = "#"+''.join([rd.choice('0123456789ABCDEF') for j in range(6)])
-            for ion in range(counted[key]):
-                colors.append(color)
-
-        unique_colors = []
-        [unique_colors.append(x) for x in colors if x not in unique_colors]
-        
         for i,obj in enumerate(ion_object_list):
             position = obj.get_position()
             if obj.get_name() == ion_object_list[i-1].get_name():
@@ -70,13 +87,11 @@ class Nernst():
         xlabs = np.arange(-1.0,1.0,0.5)
         x_tick_names = ['','In','','Out']
         plt.xticks(xlabs,x_tick_names,color='lightgray')
-        
         plt.xlim(-1,1)
         plt.ylim(0,1.01)
         plt.title('Distrubution of Ions',color='lightgray')
         plt.tick_params(left=False,bottom=True,labelleft=False,labelbottom=True)
         plt.legend(facecolor='black',edgecolor='lightgray')
-        return unique_colors
         
     def setup(self,mol_dict,total_particles=100):
         '''
@@ -107,39 +122,24 @@ class Nernst():
                     else:
                         new_ion = ion(key,mol_dict[key][0],'in')
                         ion_object_list.append(new_ion)
-        return(ion_object_list)
+
+        names = []
+        colors = []
+        [names.append(x.get_name()) for x in ion_object_list]
+        counted = dict(Counter(names))
+        for key in counted:
+            color = "#"+''.join([rd.choice('0123456789ABCDEF') for j in range(6)])
+            for i in range(counted[key]):
+                colors.append(color)
+
+        unique_colors = []
+        [unique_colors.append(x) for x in colors if x not in unique_colors]
+
+        return(ion_object_list,unique_colors,colors,names)
     
 Nernst = Nernst()
 
-class ion(object):
-    
-    def __init__(self,ion_name,valence,IO):
-        """ Initialize ion object.
-        Inputs are
-        ion_name: the type of ion (string)
-        valence: number of valence electrons (int)
-        location: string, either in or out
-        """
-        self.ion_name = ion_name
-        self.valence = valence
-        self.IO = IO
-        if IO == 'in':
-            self.position = (rd.uniform(-0.99,-0.02),rd.uniform(0.01,0.99))
-        else:
-            self.position = (rd.uniform(0.02,0.99),rd.uniform(0.01,0.99))
-        
-    def get_name(self):
-        return(self.ion_name)
-    
-    def get_valence(self):
-        return(self.valence)
-    
-    def get_IO(self):
-        return(self.IO)
-    
-    def get_position(self):
-        return(self.position)
-
+#################################################### Main Below
 if __name__ == '__main__':
     temp = 300
     
@@ -150,15 +150,10 @@ if __name__ == '__main__':
         'potassium': (1, 1, 4),
     }
     
-    ion_object_list = Nernst.setup(molarity_dict)
+    ion_object_list,unique_colors,colors,names = Nernst.setup(molarity_dict)
     
 ##################################################### Plot Ions
     figure, ax = plt.subplots(2,1,figsize=(12,12))
-    
-    plt.subplot(212)
-    plt.style.use('dark_background')
-    ax[1].set_facecolor('black')
-    unique_colors = Nernst.plot_positions(ion_object_list)
 
     plt.subplot(211)
     ax[0].set_facecolor('black')
@@ -170,6 +165,11 @@ if __name__ == '__main__':
         outside = molarity_dict[key][2]
         potential = Nernst.find_potential(temp,z,inside,outside)
         Nernst.plot_potential(potential*1000,key,unique_colors[i])
+
+    plt.subplot(212)
+    plt.style.use('dark_background')
+    ax[1].set_facecolor('black')
+    Nernst.plot_positions(ion_object_list,colors,names)
 
     plt.tight_layout()
     plt.style.use('dark_background')
