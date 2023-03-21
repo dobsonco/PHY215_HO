@@ -98,17 +98,46 @@ class Nernst():
         it finds the entropy change before and after the ion channels push ions across
         the membrane.
         '''
+        electrons = 5 #This is an arbitrary number, do not change
+        boltzmann = 1.38E-23
+        mass_water = volume * 1000
+        mols_water = mass_water / 18.02
+        inside = 0
+        outside = 0
+        for key in mol_dict:
+            for i,j in enumerate(mol_dict[key][1:]):
+                if i%2 != 0:
+                    outside += j
+                else:
+                    inside += j
+        inside = int(round(inside + mols_water))
+        outside  = int(round(outside + mols_water))
+        total_mols = int(round(inside + outside))
+
+        micro_init = 2*(np.math.factorial(int(total_mols/2))/(np.math.factorial(electrons)*((int(total_mols/2))-electrons)))
+        micro_final = np.math.factorial(inside)/(np.math.factorial(electrons)*(inside-electrons)) + np.math.factorial(outside)/(np.math.factorial(electrons)*(outside-electrons))
+
+        ent_init = np.log(micro_init)
+        ent_final = np.log(micro_final)
+        change = ent_final - ent_init
+        
         plt.xlim(0,3)
+        plt.ylim(ent_init-2,ent_final+2)
         xlabs = np.arange(0, 4, 1.0)
         x_tick_names = ['','Channel Closed', 'Channel Open','']
+        points = [0,1,2,3]
+        values= [ent_init,ent_init,ent_final,ent_final]
+        plt.plot(points,values,color='salmon')
+        plt.scatter(points,values,color='salmon')
         plt.xticks(xlabs,x_tick_names,color='lightgray')
         plt.yticks(color='lightgray')
-        plt.title('Net Entropy')
-        #plt.text(2, volts+3, str(round(volts, 2)))
+        plt.title(f'Change in Entropy: {change} Joules')
+        plt.text(0.85, ent_init+0.3, str(round(ent_init, 2)))
+        plt.text(2.01, ent_final+0.3, str(round(ent_final, 2)))
         plt.xlabel("Membrane Permeability",color='lightgray')
         plt.ylabel("Joules",color='lightgray')
         plt.grid(color="white", linestyle='-', linewidth=0.2)
-        pass
+        return change
         
     def setup(self,mol_dict,total_particles=100):
         '''
@@ -188,7 +217,7 @@ if __name__ == '__main__':
     the third is the concentration inside, and the last one is the concentration outside''')
     molarity_dict = st.experimental_data_editor(molarity_dict)
     if st.button('Plot',help='Plots the Data in the DataFrame'):
-        ion_object_list,unique_colors,colors,names = Nernst.setup(molarity_dict,total_particles=300)
+        ion_object_list,unique_colors,colors,names = Nernst.setup(molarity_dict,total_particles=100)
         figure, ax = plt.subplots(3,1,figsize=(12,16))
 
         plt.subplot(311)
@@ -205,7 +234,8 @@ if __name__ == '__main__':
         plt.subplot(312)
         plt.style.use('dark_background')
         ax[1].set_facecolor('black')
-        Nernst.entropy(molarity_dict)
+        change = Nernst.entropy(molarity_dict)
+        plt.title(f'Change in Entropy: {round(change,2)} Joules',color='lightgray')
         
         plt.subplot(313)
         plt.style.use('dark_background')
