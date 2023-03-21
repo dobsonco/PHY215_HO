@@ -8,7 +8,8 @@ videos:
 windows: https://www.youtube.com/watch?v=8-mYKkNzjU4
 mac/linux: https://www.youtube.com/watch?v=KqtKD8z-NRc
 
-3. Enter the following command into the terminal window: python3 SETUP.py
+3. Enter the following command into the terminal window: pip install streamlit
 Let that finish before you do anything else
 
-4. Enter the following command into the command prompt: python3 run.py
+4. Try the following command: python3 run.py
+if that doesn't work, try: streamlit run nernst_app.py
