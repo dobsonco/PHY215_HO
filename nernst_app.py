@@ -24,12 +24,6 @@ class ion(object):
     def get_name(self):
         return(self.ion_name)
     
-    def get_valence(self):
-        return(self.valence)
-    
-    def get_IO(self):
-        return(self.IO)
-    
     def get_position(self):
         return(self.position)
 
@@ -56,7 +50,6 @@ class Nernst():
         values= [0,0,volts,volts]
         plt.scatter(points,values,label=name,color=color)
         plt.plot(points,values,color=color)
-        plt.ylim(-100,100)
         plt.xlim(0,3)
         xlabs = np.arange(0, 4, 1.0)
         x_tick_names = ['','Channel Closed', 'Channel Open','']
@@ -163,11 +156,9 @@ class Nernst():
                 num_ions = int(round(mol_dict[key][i+1]*chunk_size,0))
                 for j in range(num_ions):
                     if i%2 != 0:
-                        new_ion = ion(key,mol_dict[key][0],'out')
-                        ion_object_list.append(new_ion)
+                        ion_object_list.append(ion(key,mol_dict[key][0],'out'))
                     else:
-                        new_ion = ion(key,mol_dict[key][0],'in')
-                        ion_object_list.append(new_ion)
+                        ion_object_list.append(ion(key,mol_dict[key][0],'in'))
 
         names = []
         colors = []
@@ -178,8 +169,7 @@ class Nernst():
             for i in range(counted[key]):
                 colors.append(color)
 
-        unique_colors = []
-        [unique_colors.append(x) for x in colors if x not in unique_colors]
+        unique_colors = list(set(colors))
 
         return(ion_object_list,unique_colors,colors,names)
     
