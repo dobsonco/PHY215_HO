@@ -3,3 +3,6 @@ This is my PHY215 SS23 honors option repository.
 This will be the location of the final project and also where I will do any prototyping and testing.
 
 # For anyone who wants to run this project on their local, please consult SETUP.txt
+
+## To view app online, use this link:
+https://dobsonco-phy215-ho-nernst-app-4zjwkr.streamlit.app/
