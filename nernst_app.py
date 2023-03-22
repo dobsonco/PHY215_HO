@@ -51,6 +51,7 @@ class Nernst():
         plt.scatter(points,values,label=name,color=color)
         plt.plot(points,values,color=color)
         plt.xlim(0,3)
+        plt.ylim(-100,100)
         xlabs = np.arange(0, 4, 1.0)
         x_tick_names = ['','Channel Closed', 'Channel Open','']
         plt.xticks(xlabs,x_tick_names,color='lightgray')
