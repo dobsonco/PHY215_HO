@@ -92,7 +92,7 @@ class Nernst():
         it finds the entropy change before and after the ion channels push ions across
         the membrane.
         '''
-        electrons = 5 #This is an arbitrary number, do not change
+        quanta = 5 #This is an arbitrary number, do not change
         boltzmann = 1.38E-23
         mass_water = volume * 1000
         mols_water = mass_water / 18.02
@@ -108,8 +108,8 @@ class Nernst():
         outside  = int(round(outside + mols_water))
         total_mols = int(round(inside + outside))
 
-        micro_init = 2*(np.math.factorial(int(total_mols/2))/(np.math.factorial(electrons)*((int(total_mols/2))-electrons)))
-        micro_final = np.math.factorial(inside)/(np.math.factorial(electrons)*(inside-electrons)) + np.math.factorial(outside)/(np.math.factorial(electrons)*(outside-electrons))
+        micro_init = 2*(np.math.factorial(int(total_mols/2))/(np.math.factorial(quanta)*((int(total_mols/2))-quanta)))
+        micro_final = np.math.factorial(inside)/(np.math.factorial(quanta)*(inside-quanta)) + np.math.factorial(outside)/(np.math.factorial(quanta)*(outside-quanta))
 
         ent_init = np.log(micro_init)
         ent_final = np.log(micro_final)
@@ -181,7 +181,7 @@ if __name__ == '__main__':
     temp = 300
 
     molarity_dict = {
-#                  z  in  out
+#                  z  #in  #out
         'sodium': (1, 0.1, 2.1),
         'calcium': (2, 7.1, 0.1),
         'potassium': (1, 1.1, 4.1),
